@@ -21,14 +21,15 @@ class SettingsComponent extends BaseObject
         $cacheExists = false;
         /** @var CacheInterface $cacheComponent */
         $cacheComponent = \Yii::$app->get($this->cacheComponent);
-        if ($cacheComponent && $cacheComponent->exists($this->cachePrefix))
+        if ($cacheComponent && $cacheComponent->exists($this->cachePrefix)) {
             $settingsLoader = \Yii::createObject(CacheSettingsLoader::class, [$this->cachePrefix, $cacheComponent]);
-        else
+            $cacheExists = true;
+        } else
             $settingsLoader = \Yii::createObject(DbSettingsLoader::class);
 
         $this->_settings = $settingsLoader->load();
-        if (!$cacheExists && \Yii::$app->cache) {
-            \Yii::$app->cache->set($this->cachePrefix, $this->_settings);
+        if (!$cacheExists && $cacheComponent) {
+            $cacheComponent->set($this->cachePrefix, $this->_settings);
         }
     }
 
