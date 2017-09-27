@@ -4,8 +4,8 @@
 namespace crawlerv\settings\controllers;
 
 use Yii;
-use common\models\Settings;
-use common\models\SettingsSearch;
+use crawlerv\settings\models\Settings;
+use crawlerv\settings\models\SettingsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
