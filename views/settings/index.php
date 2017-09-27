@@ -27,7 +27,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'key',
-            'value',
+            [
+                'attribute' => 'value',
+                'contentOptions' => [
+                    'style' => 'max-width: 200px;overflow: hidden;',
+                ],
+            ],
             [
                 'attribute' => 'status',
                 'value' => function($row){
