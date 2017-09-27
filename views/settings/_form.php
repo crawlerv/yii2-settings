@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'key')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'value')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'value')->textInput() ?>
 
     <?= $form->field($model, 'status')->dropDownList(\common\helpers\StatusHelper::getStatus()) ?>
 

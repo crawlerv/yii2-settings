@@ -35,7 +35,7 @@ class Settings extends \yii\db\ActiveRecord
             [['key', 'value', 'status'], 'required'],
             [['status', 'create_date', 'update_date'], 'integer'],
             [['key'], 'string', 'max' => 50],
-            [['value'], 'string', 'max' => 200],
+            [['value'], 'string'],
         ];
     }
 
