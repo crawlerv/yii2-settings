@@ -67,13 +67,8 @@ class SettingsController extends Controller
         $model = new Settings();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if (\Yii::$app->cache && \Yii::$app->settings && \Yii::$app->settings->cachePrefix) {
-                \Yii::$app->cache->flush();
-                foreach (Settings::find()->active()->asArray()->all() as $set) {
-                    $data[$set['key']] = $set['value'];
-                    \Yii::$app->cache->set(\Yii::$app->settings->cachePrefix, $data);
-                }
-            }
+            $this->_updateCache();
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -93,13 +88,7 @@ class SettingsController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if (\Yii::$app->cache && \Yii::$app->settings && \Yii::$app->settings->cachePrefix) {
-                \Yii::$app->cache->flush();
-                foreach (Settings::find()->active()->asArray()->all() as $set) {
-                    $data[$set['key']] = $set['value'];
-                    \Yii::$app->cache->set(\Yii::$app->settings->cachePrefix, $data);
-                }
-            }
+            $this->_updateCache();
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -119,13 +108,7 @@ class SettingsController extends Controller
     {
         $this->findModel($id)->delete();
 
-        if (\Yii::$app->cache && \Yii::$app->settings && \Yii::$app->settings->cachePrefix) {
-            \Yii::$app->cache->flush();
-            foreach (Settings::find()->active()->asArray()->all() as $set) {
-                $data[$set['key']] = $set['value'];
-                \Yii::$app->cache->set(\Yii::$app->settings->cachePrefix, $data);
-            }
-        }
+        $this->_updateCache();
 
         return $this->redirect(['index']);
     }
@@ -144,5 +127,19 @@ class SettingsController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    private function _updateCache()
+    {
+        if (\Yii::$app->cache && \Yii::$app->settings && \Yii::$app->settings->cachePrefix) {
+            if (\Yii::$app->cache->exists(\Yii::$app->settings->cachePrefix))
+                \Yii::$app->cache->delete(\Yii::$app->settings->cachePrefix);
+            $data = [];
+            foreach (Settings::find()->active()->asArray()->all() as $set) {
+                $data[$set['key']] = $set['value'];
+            }
+            if ($data)
+                \Yii::$app->cache->set(\Yii::$app->settings->cachePrefix, $data);
+        }
     }
 }
